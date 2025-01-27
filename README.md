@@ -1,5 +1,5 @@
 # chatgptpl
 
-Trzeba wpisać kod API w ".env.example" i zmienić nazwę na ".env" Baza danych do importu znajduje się w folderze "db"
+Baza danych do importu znajduje się w folderze "db"
 
 Aplikacje uruchamia się w codespaces poprzez otwarcie terminalu, wpisanie "node backend/server.js", następnie otwarcie kolejnego terminalu, wpisanie "cd frontend" oraz "npm start"
