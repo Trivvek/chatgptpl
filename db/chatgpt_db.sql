@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sty 04, 2025 at 04:23 PM
+-- Generation Time: Sty 27, 2025 at 04:44 PM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -40,9 +40,7 @@ CREATE TABLE `chats` (
 --
 
 INSERT INTO `chats` (`id`, `user_id`, `title`, `created_at`, `updated_at`) VALUES
-('8a994071-58b0-4b8c-8a56-a4cd062ac9f6', 12, 'Nowy czat', '2025-01-03 22:43:34', '2025-01-03 22:43:34'),
-('c0d544f6-e7d4-498b-9ce9-fbf08d05d7ff', 12, 'Nowy czat', '2025-01-03 22:43:39', '2025-01-04 14:28:39'),
-('e38c538a-9ccb-47e8-ba55-57e1e819465f', 12, 'Nowy czat', '2025-01-03 22:40:23', '2025-01-03 22:40:23');
+('04ebaf93-b46b-4226-a2a1-97f39185cb44', 12, 'Napisz jedno zdanie po polsku', '2025-01-26 23:16:21', '2025-01-26 23:16:23');
 
 -- --------------------------------------------------------
 
@@ -63,12 +61,38 @@ CREATE TABLE `messages` (
 --
 
 INSERT INTO `messages` (`id`, `chat_id`, `role`, `content`, `created_at`) VALUES
-(4, 'c0d544f6-e7d4-498b-9ce9-fbf08d05d7ff', 'user', 'ile to 2+2?', '2025-01-04 14:26:33'),
-(5, 'c0d544f6-e7d4-498b-9ce9-fbf08d05d7ff', 'assistant', '2 + 2 equals 4.', '2025-01-04 14:26:33'),
-(6, 'c0d544f6-e7d4-498b-9ce9-fbf08d05d7ff', 'user', 'Napisz jedno zdanie po polsku', '2025-01-04 14:27:34'),
-(7, 'c0d544f6-e7d4-498b-9ce9-fbf08d05d7ff', 'assistant', 'Pogoda dzisiaj jest piękna i słoneczna.', '2025-01-04 14:27:34'),
-(8, 'c0d544f6-e7d4-498b-9ce9-fbf08d05d7ff', 'user', 'Pamiętasz swoje odpowiedzi na 2 poprzednie pytania?', '2025-01-04 14:28:36'),
-(9, 'c0d544f6-e7d4-498b-9ce9-fbf08d05d7ff', 'assistant', 'Tak, pamiętam. Odpowiedziałem, że 2 + 2 równa się 4, a następnie napisałem zdanie po polsku: \"Pogoda dzisiaj jest piękna i słoneczna.\" Jak mogę nadal pomóc?', '2025-01-04 14:28:39');
+(14, '04ebaf93-b46b-4226-a2a1-97f39185cb44', 'user', 'Napisz jedno zdanie po polsku', '2025-01-26 23:16:21'),
+(15, '04ebaf93-b46b-4226-a2a1-97f39185cb44', 'assistant', 'Księżyc świeci jasno na nocnym niebie, oświetlając mroczne zakątki świata.', '2025-01-26 23:16:23');
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `payment_history`
+--
+
+CREATE TABLE `payment_history` (
+  `id` int(11) NOT NULL,
+  `payment_id` varchar(255) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `tokens_added` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `payment_history`
+--
+
+INSERT INTO `payment_history` (`id`, `payment_id`, `user_id`, `tokens_added`, `created_at`) VALUES
+(54, 'cs_test_a1L44aOVodtwu3au6LMCy6Ik5t0dV2RrWEjVgxti1DzuakXlCShXH1Byzc', 12, 50, '2025-01-20 23:03:56'),
+(56, 'cs_test_a1XcjQf3EXb6eMqJqXa0OdqpsvEmsEN1c9cYLCGfRXgFiyR2XABng57dba', 12, 50, '2025-01-20 23:06:27'),
+(58, 'cs_test_a1hhv3XdQfOjC7fDYsVxhiok0dY40XlTGSMy9eh5CBsxDOMQjxaNQznzAZ', 12, 50, '2025-01-20 23:07:46'),
+(60, 'cs_test_a1OAxHvszipC1tqL1ujJ1svjTfVOI7hXSzaMS83Rombjoh5eLfshnxIDze', 12, 50, '2025-01-20 23:13:37'),
+(61, 'cs_test_a1PLpaFYirGUkHfQQt02AZPnMTMzYZNSFNWjlOODtQwQkjAyxtKAK42edn', 12, 50, '2025-01-20 23:18:34'),
+(62, 'cs_test_a1BPmASGgcMuJUEXiSr2d5ybV6M6BX3MQDdrjMBb1Gij6PXR8nRR66wjsc', 12, 50, '2025-01-20 23:27:10'),
+(63, 'cs_test_a15gYcnwPtD5LsJ56IyQVXRhoEad1x4G1LbweFPS4FPP7eBC8PflICKkZm', 12, 50, '2025-01-21 04:45:37'),
+(64, 'cs_test_a19rtG53AcLPanfK7ZGj8hoo8cGqtFxvtNHXAiUQSiqnV8VYBcfq6Wh9z7', 12, 50, '2025-01-21 04:58:44'),
+(65, 'cs_test_a1H3nRWp6UMCYui4Sdl8kMYMNI6J7QckHtM0C0KB1iLdhelO7UpIAY34Ro', 12, 150, '2025-01-21 05:01:39'),
+(66, 'cs_test_a1fTMbwcaBDexPN3NtzWj1dbuIJ1ifmBMF1H7izlbt1ms5W5am8d2O84U5', 12, 50, '2025-01-21 14:20:55');
 
 -- --------------------------------------------------------
 
@@ -92,7 +116,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `activation_token`, `is_active`, `created_at`, `tokens`) VALUES
-(12, 'triv', 'triv@example.com', '$2a$10$0FBqGiqg2PzPHkPye2AmquzRojRBGz6LfnByVL.8bGaARj/HrLj9m', '67dd5bb05bca7948f538ab5a46f7e7a0ca64076e', 1, '2024-12-29 19:57:34', 7);
+(12, 'triv', 'triv@example.com', '$2a$10$0FBqGiqg2PzPHkPye2AmquzRojRBGz6LfnByVL.8bGaARj/HrLj9m', '67dd5bb05bca7948f538ab5a46f7e7a0ca64076e', 1, '2024-12-29 19:57:34', 4);
 
 --
 -- Indeksy dla zrzutów tabel
@@ -113,6 +137,16 @@ ALTER TABLE `messages`
   ADD KEY `chat_id` (`chat_id`);
 
 --
+-- Indeksy dla tabeli `payment_history`
+--
+ALTER TABLE `payment_history`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `payment_id` (`payment_id`),
+  ADD UNIQUE KEY `payment_id_2` (`payment_id`),
+  ADD UNIQUE KEY `unique_payment` (`payment_id`),
+  ADD UNIQUE KEY `idx_payment_id` (`payment_id`);
+
+--
 -- Indeksy dla tabeli `users`
 --
 ALTER TABLE `users`
@@ -127,13 +161,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `payment_history`
+--
+ALTER TABLE `payment_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables
