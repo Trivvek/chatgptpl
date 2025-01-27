@@ -48,8 +48,6 @@ const getChatDetails = async (req, res) => {
     const { chatId } = req.params;
 
     try {
-        console.log('Pobieranie szczegółów czatu:', { userId, chatId });
-
         const [chat] = await db.query(
             'SELECT * FROM chats WHERE id = ? AND user_id = ?',
             [chatId, userId]
@@ -64,9 +62,13 @@ const getChatDetails = async (req, res) => {
             [chatId]
         );
 
+        const [userRows] = await db.query('SELECT tokens FROM users WHERE id = ?', [userId]);
+        const tokens = userRows[0].tokens;
+
         res.status(200).json({
             ...chat[0],
-            messages: messages || []
+            messages: messages || [],
+            tokensLeft: tokens
         });
     } catch (error) {
         console.error("Błąd pobierania szczegółów czatu:", error);
@@ -105,6 +107,17 @@ const addMessage = async (req, res) => {
             [chatId, role, content]
         );
 
+        if (role === 'user') {
+            const chatTitle = content.length > 50 
+                ? content.substring(0, 50) + '...' 
+                : content;
+            
+            await db.query(
+                'UPDATE chats SET title = ?, updated_at = NOW() WHERE id = ?', 
+                [chatTitle, chatId]
+            );
+        }
+
         const [messages] = await db.query(
             'SELECT role, content FROM messages WHERE chat_id = ? ORDER BY created_at ASC',
             [chatId]
@@ -138,9 +151,12 @@ const addMessage = async (req, res) => {
                 [chatId]
             );
 
+            const [updatedUserRows] = await db.query('SELECT tokens FROM users WHERE id = ?', [userId]);
+            const updatedTokens = updatedUserRows[0].tokens;
+
             res.status(201).json({
                 messages: updatedMessages,
-                tokensLeft: user.tokens - 1
+                tokensLeft: updatedTokens
             });
 
         } catch (apiError) {

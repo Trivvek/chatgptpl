@@ -27,34 +27,34 @@ const Login = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ margin: "20px" }}>
-            <h2>Logowanie</h2>
-            <div>
-                <label>
-                    E-mail:
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Hasło:
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </label>
-            </div>
-            <button type="submit">Zaloguj się</button>
-            {message && <p>{message}</p>}
-            <p>Nie masz konta? <Link to="/register">Zarejestruj się</Link></p>
-        </form>
+        <div className="auth-container">
+  <form onSubmit={handleSubmit} className="auth-form">
+    <h2>Logowanie</h2>
+    <div className="form-group">
+      <label>E-mail:</label>
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+    </div>
+    <div className="form-group">
+      <label>Hasło:</label>
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+    </div>
+    <button type="submit" className="auth-button">Zaloguj się</button>
+    {message && <p className="auth-message">{message}</p>}
+    <p className="auth-message">
+      Nie masz konta? <Link to="/register" className="auth-link">Zarejestruj się</Link>
+    </p>
+  </form>
+</div>
     );
 };
 

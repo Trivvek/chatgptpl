@@ -1,51 +1,93 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Register from './Register';
 import Activate from './Activate';
 import Login from './Login';
-import ChatList from './ChatList';
-import ChatView from './ChatView';
 import PrivateRoute from './PrivateRoute';
+import TokenPurchase from './TokenPurchase';
+import PaymentSuccess from './PaymentSuccess';
+import ChatApp from './ChatApp';
+import './styles.css';
 
-const ChatLayout = () => {
-    return (
-        <div style={{ display: 'flex', height: '100vh' }}>
-            <ChatList />
-            <Routes>
-                <Route path=":chatId" element={<ChatView />} />
-                <Route path="/" element={<div style={{ flex: 1, padding: '20px' }}>Wybierz czat lub rozpocznij nowy</div>} />
-            </Routes>
+const WelcomePage = () => {
+  return (
+    <div className="welcome-page">
+      <div className="welcome-card">
+        <h1 className="welcome-title">
+          Polski ChatGPT
+          <span style={{ color: '#4CAF50' }}>&lt;/&gt;</span>
+        </h1>
+        <p className="welcome-subtitle">
+          Twój osobisty asystent AI w języku polskim
+        </p>
+        <div className="welcome-buttons">
+          <Link to="/register" className="auth-button-primary">
+            Zarejestruj się
+          </Link>
+          <Link to="/login" className="auth-button-secondary">
+            Zaloguj się
+          </Link>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
-function App() {
-    return (
-        <BrowserRouter>
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        <div>
-                            <h1>Witamy w Twoim Polskim ChatGPT!</h1>
-                            <Link to="/register" style={{ marginRight: '10px' }}>Przejdź do rejestracji</Link>
-                            <Link to="/login" style={{ marginRight: '10px' }}>Zaloguj się</Link>
-                        </div>
-                    }
-                />
-                <Route path="/register" element={<Register />} />
-                <Route path="/activate/:token" element={<Activate />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/chats/*" 
-                element={
-                <PrivateRoute>
-                    <ChatLayout />
-                </PrivateRoute>
-                }
-                />    
-            </Routes>
-        </BrowserRouter>
-    );
-}
+const App = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<WelcomePage />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/activate/:token" element={<Activate />} />
+        <Route path="/login" element={<Login />} />
+
+        <Route
+          path="/tokens"
+          element={
+            <PrivateRoute>
+              <TokenPurchase />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/payment-success"
+          element={
+            <PrivateRoute>
+              <PaymentSuccess />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/chats/*"
+          element={
+            <PrivateRoute>
+              <ChatApp />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="*"
+          element={
+            <div className="welcome-page">
+              <div className="welcome-card">
+                <h1 className="welcome-title">404</h1>
+                <p className="welcome-subtitle">
+                  Strona nie została znaleziona
+                </p>
+                <div className="welcome-buttons">
+                  <Link to="/" className="auth-button-primary">
+                    Wróć do strony głównej
+                  </Link>
+                </div>
+              </div>
+            </div>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
 export default App;

@@ -8,7 +8,6 @@ router.use(authenticateToken);
 router.post('/new', chatController.createChat);
 router.get('/:chatId', chatController.getChatDetails);
 router.get('/', chatController.getChats);
-
 router.post('/:chatId/messages', chatController.addMessage);
 
 module.exports = router;

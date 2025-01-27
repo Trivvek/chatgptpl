@@ -28,10 +28,18 @@ const askGPT = async (req, res) => {
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini-2024-07-18",
             messages: [
-                { role: "system", content: "You are a helpful assistant." },
-                { role: "user", content: question },
-            ],
-            max_tokens: 100,
+                { 
+                    role: "system", 
+                    content: `Jesteś pomocnym asystentem. Komunikujesz się wyłącznie w języku polskim. 
+                             Twoje odpowiedzi są zawsze w języku polskim, niezależnie od języka pytania.
+                             Używasz poprawnej polskiej gramatyki i interpunkcji.
+                             Twój ton jest profesjonalny ale przyjazny.
+                             Jeśli nie rozumiesz pytania, prosisz o doprecyzowanie po polsku.
+                             Jeśli pytanie jest w innym języku, odpowiadasz po polsku i możesz grzecznie
+                             zaznaczyć, że komunikujesz się tylko po polsku.`
+                },
+                { role: "user", content: question }
+            ]
         });
 
         const response = completion.choices[0]?.message?.content.trim();
@@ -90,7 +98,6 @@ const registerUser = async (req, res) => {
     }
 
     try {
-
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
@@ -132,20 +139,62 @@ const registerUser = async (req, res) => {
 
 const activateUser = async (req, res) => {
     const { token } = req.params;
+    console.log('1. Otrzymany token:', token);
 
     try {
-        const [rows] = await db.query('SELECT * FROM users WHERE activation_token = ?', [token]);
+        if (!token) {
+            console.log('Token jest pusty lub undefined');
+            return res.status(400).json({ message: "Brak tokenu aktywacyjnego." });
+        }
+
+        console.log('2. Wykonywanie zapytania dla tokenu:', token);
+        
+        const [rows] = await db.query(
+            'SELECT * FROM users WHERE activation_token = ?', 
+            [token]
+        );
+        console.log('3. Wynik zapytania:', rows);
+
         const user = rows[0];
+        
         if (!user) {
+            console.log('4. Nie znaleziono użytkownika dla tokenu:', token);
             return res.status(400).json({ message: "Nieprawidłowy token aktywacyjny." });
         }
 
-        await db.query('UPDATE users SET is_active = ? WHERE activation_token = ?', [true, token]);
+        console.log('5. Znaleziono użytkownika:', {
+            id: user.id,
+            email: user.email,
+            is_active: user.is_active
+        });
 
-        res.status(200).json({ message: "Konto zostało aktywowane pomyślnie!" });
+        console.log('6. Rozpoczęcie aktualizacji statusu aktywacji');
+        await db.query(
+            'UPDATE users SET is_active = TRUE WHERE activation_token = ?', 
+            [token]
+        );
+        console.log('7. Status aktywacji zaktualizowany');
+
+        const authToken = jwt.sign(
+            { id: user.id, email: user.email },
+            'secretKey',
+            { expiresIn: '1h' }
+        );
+        console.log('8. Wygenerowano token JWT');
+
+        res.status(200).json({ 
+            message: "Konto zostało aktywowane pomyślnie!", 
+            token: authToken,
+            tokensLeft: user.tokens 
+        });
+        console.log('9. Wysłano odpowiedź sukcesu');
     } catch (error) {
-        console.error("Błąd aktywacji użytkownika:", error);
-        res.status(500).json({ message: "Wystąpił błąd podczas aktywacji konta. Spróbuj ponownie później." });
+        console.error('Błąd podczas aktywacji:', error);
+        console.error('Stack trace:', error.stack);
+        res.status(500).json({ 
+            message: "Wystąpił błąd podczas aktywacji konta.",
+            error: error.message 
+        });
     }
 };
 
@@ -169,4 +218,22 @@ const useToken = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, activateUser, loginUser, useToken, askGPT };
+const getTokens = async (req, res) => {
+    const userId = req.user.id;
+    
+    try {
+        const [rows] = await db.query('SELECT tokens FROM users WHERE id = ?', [userId]);
+        const user = rows[0];
+        
+        if (!user) {
+            return res.status(404).json({ message: "Użytkownik nie znaleziony." });
+        }
+        
+        res.status(200).json({ tokensLeft: user.tokens });
+    } catch (error) {
+        console.error("Błąd pobierania tokenów:", error);
+        res.status(500).json({ message: "Wystąpił błąd podczas pobierania tokenów." });
+    }
+};
+
+module.exports = { registerUser, activateUser, loginUser, useToken, askGPT, getTokens };
